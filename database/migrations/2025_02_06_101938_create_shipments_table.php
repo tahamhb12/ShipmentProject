@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('carrier_id')->constrained()->cascadeOnDelete();
             $table->string('attachment');
             $table->string('shipment_price');
-            $table->enum('status',['pending','approved','rejected']);
+            $table->enum('status',['pending','approved','rejected'])->default('pending');
             $table->timestamps();
         });
     }
