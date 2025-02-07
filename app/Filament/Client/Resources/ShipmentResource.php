@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Client\Resources;
 
-use App\Filament\Resources\ShipmentResource\Pages;
-use App\Filament\Resources\ShipmentResource\RelationManagers;
+use App\Filament\Client\Resources\ShipmentResource\Pages;
+use App\Filament\Client\Resources\ShipmentResource\RelationManagers;
 use App\Models\Carrier;
 use App\Models\Shipment;
 use App\Models\User;
-use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -33,19 +32,17 @@ class ShipmentResource extends Resource
     {
         return $form
             ->schema([
-                Section::make()->schema([
-                    Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver'),
-                    Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->label('Sender')->searchable(),
-                    Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->label('Carrier')->searchable(),
-                    TextInput::make("to_address")->label('Receiver Address')->required(),
-                    TextInput::make("weight")->numeric()->required(),
-                    TextInput::make("value")->numeric()->required(),
-                    TextInput::make("tracking_number")->required(),
-                    TextInput::make("shipment_price")->numeric()->required(),
-                    FileUpload::make("attachment")->disk('public')->directory('shipment_images')->required(),
-                    Checkbox::make('isFlex')->label('Flex Shipment'),
-                ])
-            ]);
+            Section::make()->schema([
+                TextInput::make("receiver")->label('Receiver Name')->required(),
+                Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
+                TextInput::make("to_address")->label('Receiver Address')->required(),
+                TextInput::make("weight")->numeric()->required(),
+                TextInput::make("value")->numeric()->required(),
+                FileUpload::make("attachment")->disk('public')->directory('shipment_images')->required(),
+                Checkbox::make('isFlex')->label('Flex Shipment'),
+            ])
+
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -56,7 +53,7 @@ class ShipmentResource extends Resource
                 TextColumn::make('to_address'),
                 TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
                 TextColumn::make('value')->money('usd'),
-                TextColumn::make('shipment_price')->money('usd'),
+                TextColumn::make('shipment_price')->money('usd')->default('Not Assigned Yet'),
                 ImageColumn::make('attachment'),
                 TextColumn::make('isFlex')->label('Flex Shipment')->formatStateUsing(fn($state)=>$state == 1 ? "Yes" : "No"),
                 TextColumn::make("status")
@@ -71,7 +68,7 @@ class ShipmentResource extends Resource
                         "approved" => 'success',
                         "rejected" => 'danger',
                     })
-                ])
+            ])
             ->filters([
                 //
             ])

@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->string('to_address');
-            $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('receiver_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('weight');
             $table->boolean('isFlex');
             $table->string('value');
-            $table->string('tracking_number');
+            $table->string('tracking_number')->nullable();
             $table->foreignId('carrier_id')->constrained()->cascadeOnDelete();
             $table->string('attachment');
-            $table->string('shipment_price');
+            $table->string('shipment_price')->nullable();
+            $table->string('comment')->nullable();
             $table->enum('status',['pending','approved','rejected'])->default('pending');
             $table->timestamps();
         });

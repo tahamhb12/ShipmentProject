@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\GlobalScope;
+use App\Models\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Shipment extends Model
 {
-    protected $fillable = ['sender_id','weight','isFlex','value','tracking_number','carrier_id','attachment','shipment_price','status','to_address'];
+    protected $fillable = ['receiver_id','user_id','weight','isFlex','value','tracking_number','carrier_id','attachment','shipment_price','status','to_address'];
 
     public function user(){
         return $this->belongsTo(User::class);
@@ -19,8 +21,12 @@ class Shipment extends Model
     protected static function booted()
     {
         static::creating(function ($shipment) {
-            $shipment->sender_id = Auth::id();
+            $user = Auth::user();
+            if ($user->role!=='Admin') {
+                $shipment->user_id = Auth::id();
+            }
         });
+        static::addGlobalScope(new UserScope);
     }
 
 }
