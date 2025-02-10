@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
-            $table->string('to_address');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('receiver_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('weight');
@@ -23,7 +22,12 @@ return new class extends Migration
             $table->foreignId('carrier_id')->constrained()->cascadeOnDelete();
             $table->string('attachment');
             $table->string('shipment_price')->nullable();
-            $table->string('comment')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('street_address');
+            $table->string('city');
+            $table->string('state');
+            $table->string('postal_code');
+            $table->string('country');
             $table->enum('status',['pending','approved','rejected'])->default('pending');
             $table->timestamps();
         });

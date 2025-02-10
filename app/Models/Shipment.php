@@ -9,10 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class Shipment extends Model
 {
-    protected $fillable = ['receiver_id','user_id','weight','isFlex','value','tracking_number','carrier_id','attachment','shipment_price','status','to_address'];
+    protected $fillable = ['receiver_id','user_id','weight','isFlex','value','tracking_number',
+    'carrier_id','attachment','shipment_price','status','reason',
+    'street_address','city','state','postal_code','country'];
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+    public function receiver(){
+        return $this->belongsTo(User::class,);
     }
     public function carrier(){
         return $this->belongsTo(Carrier::class);

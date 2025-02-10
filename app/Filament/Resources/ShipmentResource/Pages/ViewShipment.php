@@ -39,23 +39,23 @@ class ViewShipment extends ViewRecord
                 ->modalHeading('Accept Shipment Request')
                 ->modalSubmitActionLabel('Approve Shipment Request'),
 
-        Action::make("Reject")
-            ->color('danger')
-            ->visible(fn($record) => $record->status === "pending")
-            ->action(function ($record, array $data) {
-                $record->update([
-                    "status" => "rejected",
-                    "comment" => $data['comment'],
-                ]);
-            })
-            ->form([
-                Textarea::make('comment')
-                    ->label('Comment')
-                    ->required()
-                    ->placeholder('Add a comment...')
-            ])
-            ->modalHeading('Reject Payout')
-            ->modalSubmitActionLabel('Reject Payout'),
-        ];
+            Action::make("Reject")
+                ->color('danger')
+                ->visible(fn($record) => $record->status === "pending")
+                ->action(function ($record, array $data) {
+                    $record->update([
+                        "status" => "rejected",
+                        "reason" => $data['reason'],
+                    ]);
+                })
+                ->form([
+                    Textarea::make('reason')
+                        ->label('Reason')
+                        ->required()
+                        ->placeholder('Reason...')
+                ])
+                ->modalHeading('Reject Payout')
+                ->modalSubmitActionLabel('Reject Payout'),
+            ];
     }
 }
