@@ -53,7 +53,7 @@ class ShipmentResource extends Resource
                 Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
                 TextInput::make("weight")->numeric()->required()->suffix('KG'),
                 TextInput::make("value")->numeric()->required()->suffix('$'),
-                FileUpload::make("attachment")->disk('public')->directory('shipment_images')->required(),
+                FileUpload::make("attachment")->disk('public')->directory('shipment_images')->required()->multiple(),
                 Checkbox::make('isFlex')->label('Flex Shipment'),
             ])->collapsible(),
         ]);
@@ -68,8 +68,8 @@ class ShipmentResource extends Resource
                 TextColumn::make('tracking_number')->default('None'),
                 TextColumn::make('carrier.name'),
                 TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
-                TextColumn::make('value')->money('usd'),
-                TextColumn::make('shipment_price')->money('usd')->default('Not Assigned Yet'),
+                TextColumn::make('value')->money('mad'),
+                TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet'),
                 ImageColumn::make('attachment'),
                 IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),
                 TextColumn::make("status")

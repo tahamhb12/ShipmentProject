@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('amount');
             $table->string('method');
             $table->date('date');
-            $table->string('attachment');
+            $table->json('attachment')->nullable();
             $table->timestamps();
         });
     }

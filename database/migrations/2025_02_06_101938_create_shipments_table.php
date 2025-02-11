@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('value');
             $table->string('tracking_number')->nullable();
             $table->foreignId('carrier_id')->constrained()->cascadeOnDelete();
-            $table->string('attachment');
+            $table->json('attachment')->nullable();
             $table->string('shipment_price')->nullable();
             $table->string('reason')->nullable();
             $table->string('street_address');

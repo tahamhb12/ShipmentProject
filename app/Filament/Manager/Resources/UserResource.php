@@ -44,6 +44,7 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(User::query()->whereNot('role','Admin'))
             ->columns([
                 TextColumn::make("name"),
                 TextColumn::make("email"),

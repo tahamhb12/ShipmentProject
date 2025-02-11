@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Filament\Client\Resources;
+namespace App\Filament\Accountant\Resources;
 
-use App\Filament\Client\Resources\PaymentResource\Pages;
-use App\Filament\Client\Resources\PaymentResource\RelationManagers;
+use App\Filament\Accountant\Resources\PaymentResource\Pages;
+use App\Filament\Accountant\Resources\PaymentResource\RelationManagers;
 use App\Models\Payment;
+use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -20,14 +25,16 @@ class PaymentResource extends Resource
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Shipments';
-
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Select::make('client_id')->options(User::pluck('name','id'))->required()->searchable()->label('Client'),
+                TextInput::make('amount')->required()->numeric(),
+                Select::make('method')->options(['Visa','MasterCard','Paypal','Cash on Delivery'])->required(),
+                DatePicker::make('date')->required(),
+                FileUpload::make('attachment')->required()->multiple(),
             ]);
     }
 
@@ -35,6 +42,7 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('client.name')->searchable(),
                 TextColumn::make('amount'),
                 TextColumn::make('method'),
                 TextColumn::make('date')->date(),

@@ -13,11 +13,14 @@ class Shipment extends Model
     'carrier_id','attachment','shipment_price','status','reason',
     'street_address','city','state','postal_code','country'];
 
+    protected $casts = [
+        'attachment' => 'array', 
+    ];
     public function user(){
         return $this->belongsTo(User::class);
     }
     public function receiver(){
-        return $this->belongsTo(User::class,);
+        return $this->belongsTo(User::class);
     }
     public function carrier(){
         return $this->belongsTo(Carrier::class);
@@ -27,7 +30,7 @@ class Shipment extends Model
     {
         static::creating(function ($shipment) {
             $user = Auth::user();
-            if ($user->role!=='Admin') {
+            if ($user->role!=='Admin' && $user->role!=='Manager') {
                 $shipment->user_id = Auth::id();
             }
         });
