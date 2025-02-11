@@ -54,8 +54,8 @@ class ViewShipment extends ViewRecord
                         ->required()
                         ->placeholder('Reason...')
                 ])
-                ->modalHeading('Reject Payout')
-                ->modalSubmitActionLabel('Reject Payout'),
+                ->modalHeading('Reject Shipment Request')
+                ->modalSubmitActionLabel('Reject Shipment Request'),
             ];
     }
 }

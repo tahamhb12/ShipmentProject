@@ -29,7 +29,7 @@ class AddressResource extends Resource
     {
         return $form
             ->schema([
-                Select::make(name: 'user_id')->options(User::pluck('name','id'))->required(),
+                Select::make(name: 'user_id')->options(User::pluck('name','id'))->searchable()->required(),
                 TextInput::make('street_address')->required(),
                 TextInput::make('city')->required(),
                 TextInput::make('state')->required(),
