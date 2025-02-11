@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Manager\Resources;
 
-use App\Filament\Resources\AddressResource\Pages;
-use App\Filament\Resources\AddressResource\RelationManagers;
+use App\Filament\Manager\Resources\AddressResource\Pages;
+use App\Filament\Manager\Resources\AddressResource\RelationManagers;
 use App\Models\Address;
 use App\Models\User;
 use Filament\Forms;
@@ -20,10 +20,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AddressResource extends Resource
 {
     protected static ?string $model = Address::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Shipments';
 
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {

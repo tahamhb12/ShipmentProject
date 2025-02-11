@@ -15,7 +15,7 @@ class UserScope implements Scope
     public function apply(Builder $builder, Model $model): void
     {
         $user = Auth::user();
-        if($user->role !=='Admin'){
+        if($user->role !=='Admin' && $user->role !=='Manager'){
             $builder->where('user_id',$user->id);
         }
     }
