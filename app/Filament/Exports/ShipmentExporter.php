@@ -14,12 +14,17 @@ class ShipmentExporter extends Exporter
     public static function getColumns(): array
     {
         return [
-            ExportColumn::make('user.name')->label('User'),
+            ExportColumn::make('user.name')->label('Sender'),
             ExportColumn::make('receiver.name')->label('Receiver'),
-            ExportColumn::make('carrier'),
-            ExportColumn::make('weight'),
-            ExportColumn::make('value'),
-            ExportColumn::make('shipment_price'),
+            ExportColumn::make('carrier.name')->label('Carrier'),
+            ExportColumn::make('weight')->label('Weight'),
+            ExportColumn::make('value')->label('Value'),
+            ExportColumn::make('shipment_price')->label('Shipment Price')->default('none'),
+            ExportColumn::make('state'),
+            ExportColumn::make('city'),
+            ExportColumn::make('country'),
+            ExportColumn::make('postal_code'),
+            ExportColumn::make('status'),
         ];
     }
 

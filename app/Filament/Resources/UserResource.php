@@ -28,12 +28,12 @@ class UserResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->required(),
-                TextInput::make('email')->unique()->required(),
+                TextInput::make('email')->unique(ignoreRecord:true)->required(),
                 TextInput::make('password')->password()->required()->visibleOn('create'),
                 TextInput::make('password_confirmation')
                 ->password()
                 ->same('password')->required()->visibleOn('create'),
-                Select::make('role')->options(['Admin','Manager','Client'])->required(),
+                Select::make('role')->options(['Admin'=>'Admin','Manager'=>'Manager','Client'=>'Client','Accountant'=>'Accountant'])->required(),
             ]);
     }
 

@@ -54,6 +54,7 @@ class ManagerPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
                 RoleCheck::class
             ])
+            ->databaseNotifications()
             ->authMiddleware([
                 Authenticate::class,
             ]);
