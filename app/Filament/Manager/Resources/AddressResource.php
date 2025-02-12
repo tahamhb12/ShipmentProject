@@ -23,7 +23,7 @@ class AddressResource extends Resource
     protected static ?string $navigationGroup = 'Shipments';
 
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-map-pin';
 
     public static function form(Form $form): Form
     {

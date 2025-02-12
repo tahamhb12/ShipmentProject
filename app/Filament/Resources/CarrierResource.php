@@ -21,7 +21,7 @@ class CarrierResource extends Resource
 {
     protected static ?string $model = Carrier::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-building-office-2';
     protected static ?string $navigationGroup = 'Shipments';
 
 
