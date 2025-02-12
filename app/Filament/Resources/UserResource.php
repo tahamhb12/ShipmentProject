@@ -35,7 +35,11 @@ class UserResource extends Resource
                 TextInput::make('password_confirmation')
                 ->password()
                 ->same('password')->required()->visibleOn('create'),
+<<<<<<< HEAD
                 Select::make('role')->options(['Admin'=>'Admin','Manager'=>'Manager','Client'=>'Client'])->required(),
+=======
+                Select::make('role')->options(['Admin'=>'Admin','Manager'=>'Manager','Client'=>'Client','Accountant'=>'Accountant'])->required(),
+>>>>>>> 824c2f135a0071dfef1dd71124b5ef3693b9eae3
             ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ShipmentExporter;
 use App\Filament\Resources\ShipmentResource\Pages;
 use App\Filament\Resources\ShipmentResource\RelationManagers;
 use App\Models\Carrier;
@@ -17,6 +18,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -106,6 +108,9 @@ class ShipmentResource extends Resource
                 ->label('Download Files')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(fn ($record) => route('shipments.download', $record))
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(ShipmentExporter::class)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
