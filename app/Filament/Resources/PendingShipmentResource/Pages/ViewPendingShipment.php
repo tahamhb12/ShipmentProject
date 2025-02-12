@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\ShipmentResource\Pages;
+namespace App\Filament\Resources\PendingShipmentResource\Pages;
 
-use App\Filament\Resources\ShipmentResource;
+use App\Filament\Resources\PendingShipmentResource;
 use Filament\Actions;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewShipment extends ViewRecord
+class ViewPendingShipment extends ViewRecord
 {
-    protected static string $resource = ShipmentResource::class;
+    protected static string $resource = PendingShipmentResource::class;
 
     protected function getHeaderActions(): array
     {

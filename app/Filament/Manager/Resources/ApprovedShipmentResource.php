@@ -2,8 +2,9 @@
 
 namespace App\Filament\Manager\Resources;
 
-use App\Filament\Manager\Resources\ShipmentResource\Pages;
-use App\Filament\Manager\Resources\ShipmentResource\RelationManagers;
+use App\Filament\Manager\Resources\ApprovedShipmentResource\Pages;
+use App\Filament\Resources\ApprovedShipmentResource\RelationManagers;
+use App\Models\ApprovedShipment;
 use App\Models\Carrier;
 use App\Models\Shipment;
 use App\Models\User;
@@ -18,58 +19,60 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 
-class ShipmentResource extends Resource
+class ApprovedShipmentResource extends Resource
 {
     protected static ?string $model = Shipment::class;
 
-    protected static ?string $navigationGroup = 'Shipments';
-    protected static ?int $navigationSort = -5;
-
-
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $label = 'Approved Shipments';
+    protected static ?string $navigationParentItem = 'Shipments';
+    protected static ?string $navigationGroup = 'Shipments';
+
+
+
 
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Section::make()->schema([
-                TextInput::make("tracking_number")
-                ->visible(fn ($record) => $record !== null),
-                TextInput::make("shipment_price")
-                ->visible(fn ($record) => $record !== null)
-                ->suffix('$'),
-                Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender'),
-                Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver'),
-            ]),
-            Section::make("Address")->schema([
-                TextInput::make('street_address')->required(),
-                TextInput::make('state')->required(),
-                TextInput::make('city')->required(),
-                Country::make('country')->required(),
-                TextInput::make('postal_code')->required(),
-            ])->collapsible()->columns(2),
+            ->schema([
+                Section::make()->schema([
+                    TextInput::make("tracking_number")
+                    ->visible(fn ($record) => $record !== null),
+                    TextInput::make("shipment_price")
+                    ->visible(fn ($record) => $record !== null)
+                    ->suffix('$'),
+                    Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender'),
+                    Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver'),
+                ]),
+                Section::make("Address")->schema([
+                    TextInput::make('street_address')->required(),
+                    TextInput::make('state')->required(),
+                    TextInput::make('city')->required(),
+                    Country::make('country')->required(),
+                    TextInput::make('postal_code')->required(),
+                ])->collapsible()->columns(2),
                 Section::make('Package Information')->schema([
-                Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
-                TextInput::make("weight")->numeric()->required()->suffix('KG'),
-                TextInput::make("value")->numeric()->required()->suffix('$'),
-                FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
-                Checkbox::make('isFlex')->label('Flex Shipment'),
-            ])->collapsible(),
-        ]);
+                    Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
+                    TextInput::make("weight")->numeric()->required()->suffix('KG'),
+                    TextInput::make("value")->numeric()->required()->suffix('$'),
+                    FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
+                    Checkbox::make('isFlex')->label('Flex Shipment'),
+                ])->collapsible(),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Shipment::query()->where('status','approved'))
             ->columns([
                 TextColumn::make('user.name'),
                 TextColumn::make('receiver.name'),
@@ -85,11 +88,7 @@ class ShipmentResource extends Resource
                     if($state == "pending") return 'Pending';
                     })
                     ->badge()
-                    ->icon(fn($state)=>match ($state){
-                        'approved'=>'heroicon-s-check-badge',
-                        'rejected'=>'heroicon-s-x-circle',
-                        'pending'=>'heroicon-s-arrow-path',
-                    })
+                    ->icon('heroicon-s-check-badge')
                     ->color(fn ($state) => match ($state) {
                         'pending' => 'warning',
                         "approved" => 'success',
@@ -101,16 +100,13 @@ class ShipmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
                 Action::make('downloadFiles')
                 ->label('Download Files')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(fn ($record) => route('shipments.download', $record))
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 
@@ -120,14 +116,22 @@ class ShipmentResource extends Resource
             //
         ];
     }
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+    public static function canEdit(Model $model): bool
+    {
+        return false;
+    }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListShipments::route('/'),
-            'create' => Pages\CreateShipment::route('/create'),
-            'view' => Pages\ViewShipment::route('/{record}'),
-            'edit' => Pages\EditShipment::route('/{record}/edit'),
+            'index' => Pages\ListApprovedShipments::route('/'),
+            'create' => Pages\CreateApprovedShipment::route('/create'),
+            'view' => Pages\ViewApprovedShipment::route('/{record}'),
+            'edit' => Pages\EditApprovedShipment::route('/{record}/edit'),
         ];
     }
 }

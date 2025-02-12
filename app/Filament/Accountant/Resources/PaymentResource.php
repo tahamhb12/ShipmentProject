@@ -32,7 +32,7 @@ class PaymentResource extends Resource
             ->schema([
                 Select::make('client_id')->options(User::pluck('name','id'))->required()->searchable()->label('Client'),
                 TextInput::make('amount')->required()->numeric(),
-                Select::make('method')->options(['Visa','MasterCard','Paypal','Cash on Delivery'])->required(),
+                Select::make('method')->options(['Cheque','Virment','Cash'])->required(),
                 DatePicker::make('date')->required(),
                 FileUpload::make('attachment')->required()->multiple(),
             ]);

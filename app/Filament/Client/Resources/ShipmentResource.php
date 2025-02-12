@@ -7,6 +7,7 @@ use App\Filament\Client\Resources\ShipmentResource\RelationManagers;
 use App\Models\Carrier;
 use App\Models\Shipment;
 use App\Models\User;
+use Filament\Tables\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -23,6 +24,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use ZipArchive;
 
 class ShipmentResource extends Resource
 {
@@ -39,6 +42,9 @@ class ShipmentResource extends Resource
         return $form
             ->schema([
             Section::make()->schema([
+                TextInput::make("shipment_price")
+                ->visible(fn ($record) => $record !== null)
+                ->suffix('$'),
                 TextInput::make("receiver")->label('Receiver Name')->required()->visibleOn('create'),
                 TextInput::make("receiver_id")->label('Receiver Name')->formatStateUsing(function($state){
                     $user = User::find($state);
@@ -52,14 +58,14 @@ class ShipmentResource extends Resource
                 TextInput::make('street_address')->required(),
                 TextInput::make('state')->required(),
                 TextInput::make('city')->required(),
-                TextInput::make('country')->required(),
+                Country::make('country')->required(),
                 TextInput::make('postal_code')->required(),
             ])->collapsible()->columns(2),
             Section::make('Package Information')->schema([
                 Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
                 TextInput::make("weight")->numeric()->required()->suffix('KG'),
                 TextInput::make("value")->numeric()->required()->suffix('$'),
-                FileUpload::make("attachment")->disk('public')->directory('shipment_images')->required()->multiple(),
+                FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
                 Checkbox::make('isFlex')->label('Flex Shipment'),
             ])->collapsible(),
         ]);
@@ -74,7 +80,6 @@ class ShipmentResource extends Resource
                 TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
                 TextColumn::make('value')->money('mad'),
                 TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet'),
-                ImageColumn::make('attachment'),
                 IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),
                 TextColumn::make("status")
                 ->formatStateUsing(function($state){
@@ -83,12 +88,16 @@ class ShipmentResource extends Resource
                     if($state == "pending") return 'Pending';
                 })
                 ->badge()
+                ->icon(fn($state)=>match ($state){
+                    'approved'=>'heroicon-s-check-badge',
+                    'rejected'=>'heroicon-s-x-circle',
+                    'pending'=>'heroicon-s-arrow-path',
+                })
                 ->color(fn ($state) => match ($state) {
                     'pending' => 'warning',
                     "approved" => 'success',
                     "rejected" => 'danger',
                 }),
-                TextColumn::make('reason')->default('No Reason'),
             ])
             ->filters([
                 SelectFilter::make("status")->options([
@@ -100,6 +109,10 @@ class ShipmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Action::make('downloadFiles')
+                ->label('Download Files')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn ($record) => route('shipments.download', $record))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
