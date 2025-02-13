@@ -74,7 +74,7 @@ class PendingShipmentResource extends Resource
             TextColumn::make('user.name'),
             TextColumn::make('receiver.name'),
             TextColumn::make('carrier.name'),
-            TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
+            TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.' Kg'),
             TextColumn::make('value')->money('mad'),
             IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),
             TextColumn::make("status")

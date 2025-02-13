@@ -2,6 +2,7 @@
 
 namespace App\Filament\Manager\Resources;
 
+use App\Filament\Exports\ShipmentExporter;
 use App\Filament\Manager\Resources\ShipmentResource\Pages;
 use App\Filament\Manager\Resources\ShipmentResource\RelationManagers;
 use App\Models\Carrier;
@@ -17,10 +18,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -74,7 +75,7 @@ class ShipmentResource extends Resource
                 TextColumn::make('user.name'),
                 TextColumn::make('receiver.name'),
                 TextColumn::make('carrier.name'),
-                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
+                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.' Kg'),
                 TextColumn::make('value')->money('mad'),
                 TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet'),
                 IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),
@@ -106,6 +107,9 @@ class ShipmentResource extends Resource
                 ->label('Download Files')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(fn ($record) => route('shipments.download', $record))
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(ShipmentExporter::class)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

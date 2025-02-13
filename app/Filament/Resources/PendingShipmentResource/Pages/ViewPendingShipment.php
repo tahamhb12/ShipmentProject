@@ -56,6 +56,10 @@ class ViewPendingShipment extends ViewRecord
                 ])
                 ->modalHeading('Reject Shipment Request')
                 ->modalSubmitActionLabel('Reject Shipment Request'),
+                Action::make('downloadFiles')
+                ->label('Download Files')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn ($record) => route('shipments.download', $record))
             ];
     }
 }

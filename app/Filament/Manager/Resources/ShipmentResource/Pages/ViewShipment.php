@@ -6,6 +6,7 @@ use App\Filament\Manager\Resources\ShipmentResource;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewShipment extends ViewRecord
@@ -27,11 +28,11 @@ class ViewShipment extends ViewRecord
                     ]);
                 })
                 ->form([
-                    Textarea::make('tracking_number')
+                    TextInput::make('tracking_number')
                         ->label('Tracking Number')
                         ->required()
                         ->placeholder('Type Tracking Number...'),
-                    Textarea::make('shipment_price')
+                    TextInput::make('shipment_price')
                         ->label('Shipment Price')
                         ->required()
                         ->placeholder('Type Shipment Price...'),
@@ -49,7 +50,7 @@ class ViewShipment extends ViewRecord
                     ]);
                 })
                 ->form([
-                    Textarea::make('reason')
+                    TextInput::make('reason')
                         ->label('Reason')
                         ->required()
                         ->placeholder('Reason...')

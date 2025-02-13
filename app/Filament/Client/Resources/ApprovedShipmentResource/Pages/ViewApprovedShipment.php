@@ -4,6 +4,7 @@ namespace App\Filament\Client\Resources\ApprovedShipmentResource\Pages;
 
 use App\Filament\Client\Resources\ApprovedShipmentResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewApprovedShipment extends ViewRecord
@@ -14,6 +15,10 @@ class ViewApprovedShipment extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Action::make('downloadFiles')
+            ->label('Download Files')
+            ->icon('heroicon-o-arrow-down-tray')
+            ->url(fn ($record) => route('shipments.download', $record))
         ];
     }
 }

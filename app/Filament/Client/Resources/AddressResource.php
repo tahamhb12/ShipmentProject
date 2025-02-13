@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 
 class AddressResource extends Resource
 {
@@ -33,7 +34,7 @@ class AddressResource extends Resource
                 TextInput::make('city')->required(),
                 TextInput::make('state')->required(),
                 TextInput::make('postal_code')->required(),
-                TextInput::make('country')->required(),
+                Country::make('country')->required(),
             ]);
    }
 
@@ -41,11 +42,11 @@ class AddressResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('street_address'),
-                TextColumn::make('city'),
-                TextColumn::make('state'),
-                TextColumn::make('postal_code'),
-                TextColumn::make('country'),
+                TextColumn::make('street_address')->searchable(),
+                TextColumn::make('city')->searchable(),
+                TextColumn::make('state')->searchable(),
+                TextColumn::make('postal_code')->searchable(),
+                TextColumn::make('country')->searchable(),
             ])
             ->filters([
                 //

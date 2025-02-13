@@ -77,7 +77,7 @@ class ApprovedShipmentResource extends Resource
                 TextColumn::make('user.name'),
                 TextColumn::make('receiver.name'),
                 TextColumn::make('carrier.name'),
-                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
+                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.' Kg'),
                 TextColumn::make('value')->money('mad'),
                 TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet'),
                 IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),

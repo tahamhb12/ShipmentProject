@@ -15,11 +15,17 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Group;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section as ComponentsSection;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +38,9 @@ class ApprovedShipmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $label = 'Approved Shipments';
+    protected static ?string $label = 'Approved';
+    protected static ?string $pluralLabel = 'Approved';
+
     protected static ?string $navigationParentItem = 'Shipments';
     protected static ?string $navigationGroup = 'Shipments';
 
@@ -74,13 +82,12 @@ class ApprovedShipmentResource extends Resource
         return $table
             ->query(Shipment::query()->where('status','approved'))
             ->columns([
-                TextColumn::make('user.name'),
-                TextColumn::make('receiver.name'),
-                TextColumn::make('carrier.name'),
-                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.'Kg'),
+                TextColumn::make('receiver.name')->searchable(),
+                TextColumn::make('carrier.name')->searchable(),
+                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.' Kg'),
                 TextColumn::make('value')->money('mad'),
-                TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet'),
-                IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),
+                TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet')->label('Price'),
+                IconColumn::make('isFlex')->label('Flex')->boolean(),
                 TextColumn::make("status")
                 ->formatStateUsing(function($state){
                     if($state == "approved") return 'Approved';
@@ -96,14 +103,13 @@ class ApprovedShipmentResource extends Resource
                     })
             ])
             ->filters([
-                //
+                SelectFilter::make('carrier')
+                ->relationship('carrier','name'),
+                SelectFilter::make('isFlex')
+                ->options([true=>'Yes',false=>'No'])->label('Flex?'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Action::make('downloadFiles')
-                ->label('Download Files')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->url(fn ($record) => route('shipments.download', $record))
             ])
             ->bulkActions([
                 //
@@ -115,6 +121,76 @@ class ApprovedShipmentResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist{
+        return $infolist
+        ->schema([
+            Group::make()->schema([
+                ComponentsSection::make('Recipient Details')->schema([
+                    TextEntry::make('receiver.name')->label('Name')
+                ])->collapsible(),
+                ComponentsSection::make('Address')->schema([
+                    TextEntry::make('street_address')
+                    ->label('Street Address')
+                    ->columnSpanFull(),
+                    TextEntry::make('city')
+                        ->label('City'),
+                    TextEntry::make('state')
+                        ->label('State'),
+                    TextEntry::make('postal_code')
+                        ->label('Postal Code'),
+                    TextEntry::make('country')
+                        ->label('Country'),
+                ])->collapsible(),
+            ]),
+
+            Group::make()->schema([
+                ComponentsSection::make('Shipment Details')->schema([
+                    TextEntry::make('tracking_number')
+                    ->label('Tracking Number')
+                    ->copyable(),
+                    TextEntry::make("status")
+                    ->formatStateUsing(function($state){
+                        if($state == "approved") return 'Approved';
+                        if($state == "rejected") return 'Rejected';
+                        if($state == "pending") return 'Pending';
+                        })
+                        ->badge()
+                        ->icon('heroicon-s-check-badge')
+                        ->color(fn ($state) => match ($state) {
+                            'pending' => 'warning',
+                            "approved" => 'success',
+                            "rejected" => 'danger',
+                        }),
+                        TextEntry::make('shipment_price')
+                        ->label('Shipment Price')
+                        ->money('mad'),
+                        TextEntry::make('value')
+                        ->label('Value')
+                        ->money('mad'),
+                        TextEntry::make('weight')
+                        ->label('Weight (kg)')
+                        ->suffix(' kg'),
+                        TextEntry::make('carrier.name')
+                            ->label('Carrier'),
+                        TextEntry::make('isFlex')
+                        ->label('Flexible')
+                        ->badge()
+                        ->color(fn ($state) => $state ? 'success' : 'danger')
+                        ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+                    TextEntry::make('reason')
+                        ->label('Reason')
+                        ->hidden(fn ($record) => empty($record->reason)),
+                ])->collapsible()->columns(2),
+                ComponentsSection::make('Shipment Details')->schema([
+                    ImageEntry::make('attachment')
+                        ->label('Attachment')
+                        ->size(200),
+                ])->collapsible(),
+            ])->columnSpan(2)
+
+        ])->columns(3);
     }
     public static function canCreate(): bool
     {

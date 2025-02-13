@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -32,9 +33,9 @@ class PaymentResource extends Resource
             ->schema([
                 Select::make('client_id')->options(User::pluck('name','id'))->required()->searchable()->label('Client'),
                 TextInput::make('amount')->required()->numeric(),
-                Select::make('method')->options(['Cheque','Virment','Cash'])->required(),
+                Select::make('method')->options(['Cheque'=>'Cheque','Virment'=>'Virment','Cash'=>'Cash'])->required(),
                 DatePicker::make('date')->required(),
-                FileUpload::make('attachment')->required()->multiple(),
+                FileUpload::make('attachment')->required()->disk('public')->directory('payment_files')->multiple(),
             ]);
     }
 
@@ -54,6 +55,10 @@ class PaymentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Action::make('downloadFiles')
+                ->label('Download Files')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn ($record) => route('payments.download', $record))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

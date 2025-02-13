@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -57,6 +58,10 @@ class PaymentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Action::make('downloadFiles')
+                ->label('Download Files')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn ($record) => route('payments.download', $record))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
