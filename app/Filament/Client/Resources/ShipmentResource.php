@@ -192,7 +192,7 @@ class ShipmentResource extends Resource
                         ->color(fn ($state) => $state ? 'success' : 'danger')
                         ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
                 ])->collapsible()->columns(2),
-                ComponentsSection::make('Shipment Details')->schema([
+                ComponentsSection::make('Files')->schema([
                     ImageEntry::make('attachment')
                         ->label('Attachment')
                         ->size(100),

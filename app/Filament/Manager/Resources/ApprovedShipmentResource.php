@@ -198,7 +198,7 @@ class ApprovedShipmentResource extends Resource
                         ->label('Reason')
                         ->hidden(fn ($record) => empty($record->reason)),
                 ])->collapsible()->columns(2),
-                ComponentsSection::make('Shipment Details')->schema([
+                ComponentsSection::make('Files')->schema([
                     ImageEntry::make('attachment')
                         ->label('Attachment')
                         ->size(100),
