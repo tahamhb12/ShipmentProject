@@ -32,7 +32,7 @@ class Dashbaord extends BaseWidget
 
         return [
             $outstandingBalance<0?
-            Stat::make('Credit Amount',$outstandingBalance*-1 .' DH')
+            Stat::make('Credit Amount',number_format($outstandingBalance*-1,0) .' DH')
             ->description('Total amount the company owes you')
             ->descriptionIcon('heroicon-m-currency-dollar',IconPosition::Before)
             ->chart([1,20,10,10,20,40])
