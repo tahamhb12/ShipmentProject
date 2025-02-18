@@ -18,7 +18,11 @@ class ViewApprovedShipment extends ViewRecord
             Action::make('downloadFiles')
             ->label('Download Files')
             ->icon('heroicon-o-arrow-down-tray')
-            ->url(fn ($record) => route('shipments.download', $record))
+            ->url(fn ($record) => route('shipments.download', $record)),
+            Action::make('barCode')
+            ->label('Bar Code')
+            ->icon('heroicon-o-arrow-down-tray')
+            ->url(fn ($record) => route('barcode.generate', $record->tracking_number))
         ];
     }
 }
