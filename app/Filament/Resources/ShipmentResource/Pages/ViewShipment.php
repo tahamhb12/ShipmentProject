@@ -61,11 +61,12 @@ class ViewShipment extends ViewRecord
                 ->label('Download Files')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(fn ($record) => route('shipments.download', $record)),
-                Action::make('barCode')
-                ->label('Bar Code')
+                Action::make('pdf')
+                ->label('Receipt')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->visible(fn($record)=>$record->status=='approved')
-                ->url(fn ($record) => route('barcode.generate', $record->tracking_number))
+                ->url(fn ($record) => route('pdf.download', $record))
+                ->openUrlInNewTab()
             ];
     }
 }

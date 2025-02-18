@@ -38,7 +38,7 @@ class Dashbaord extends BaseWidget
             ->chart([1,20,10,10,20,40])
             ->color('success')
             :
-            Stat::make('Due Amount',$outstandingBalance.' DH')
+            Stat::make('Due Amount',number_format($outstandingBalance,0).' DH')
             ->description('Total amount due to the company')
             ->descriptionIcon('heroicon-m-currency-dollar',IconPosition::Before)
             ->chart([1,20,10,10,20,40])

@@ -60,7 +60,13 @@ class ViewShipment extends ViewRecord
                 Action::make('downloadFiles')
                 ->label('Download Files')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->url(fn ($record) => route('shipments.download', $record))
+                ->url(fn ($record) => route('shipments.download', $record)),
+                Action::make('pdf')
+                ->label('Receipt')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->visible(fn($record)=>$record->status=='approved')
+                ->url(fn ($record) => route('pdf.download', $record))
+                ->openUrlInNewTab()
             ];
     }
 }
