@@ -12,6 +12,6 @@ class BarCodeGenerator extends Controller
         $barcode = (new \Picqer\Barcode\Types\TypeCode128())->getBarcode($id);
 
         $renderer = new \Picqer\Barcode\Renderers\HtmlRenderer();
-        echo $renderer->render($barcode);
+        return $renderer->render($barcode);
     }
 }

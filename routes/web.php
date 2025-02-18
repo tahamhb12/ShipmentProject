@@ -15,3 +15,4 @@ Route::get('/payments/{payment}/download', [DownloadShipmentFilesController::cla
     ->name('payments.download');
 
 Route::get('/barcode/{id}',[ControllersBarCodeGenerator::class,'generateBarCode'])->name('barcode.generate');
+

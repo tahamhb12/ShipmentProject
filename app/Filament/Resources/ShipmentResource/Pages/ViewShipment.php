@@ -65,7 +65,8 @@ class ViewShipment extends ViewRecord
                 ->label('Bar Code')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->visible(fn($record)=>$record->status=='approved')
-                ->url(fn ($record) => route('barcode.generate', $record->tracking_number))
+                ->url(fn ($record) => route('barcode.generate', $record->tracking_number)),
+                
             ];
     }
 }

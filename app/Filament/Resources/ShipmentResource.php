@@ -114,7 +114,12 @@ class ShipmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make("view_invoice")
+                    ->label(_("View Invoice"))
+                    ->icon('heroicon-o-document')
+                    ->url(fn ($record) => self::getUrl('invoice', ['record' => $record]))
             ])
+
             ->headerActions([
                 ExportAction::make()->exporter(ShipmentExporter::class)
             ])
@@ -123,6 +128,7 @@ class ShipmentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+
     }
 
     public static function infolist(Infolist $infolist): Infolist{
@@ -216,6 +222,8 @@ class ShipmentResource extends Resource
             'create' => Pages\CreateShipment::route('/create'),
             'view' => Pages\ViewShipment::route('/{record}'),
             'edit' => Pages\EditShipment::route('/{record}/edit'),
+            'invoice' => Pages\Invoice::route('/{record}/invoice'),
+
         ];
     }
 }

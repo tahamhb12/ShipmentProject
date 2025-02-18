@@ -14,7 +14,7 @@ class Shipment extends Model
     'street_address','city','state','postal_code','country'];
 
     protected $casts = [
-        'attachment' => 'array', 
+        'attachment' => 'array',
     ];
     public function user(){
         return $this->belongsTo(User::class);
