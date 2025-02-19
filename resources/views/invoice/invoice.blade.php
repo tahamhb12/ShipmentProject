@@ -33,7 +33,7 @@
                 <p>34234234</p>
             </div>
             <div class="order_no">
-                <p>Weight</p>
+                <p>Weight:</p>
                 <p>{{$weight}}KG</p>
             </div>
         </div>
