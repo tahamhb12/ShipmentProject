@@ -54,8 +54,28 @@ class ShipmentResource extends Resource
                 TextInput::make("shipment_price")
                 ->visible(fn ($record) => $record !== null)
                 ->suffix('$'),
-                Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender'),
-                Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver'),
+                Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender')
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('name')->required(),
+                    TextInput::make('email')->unique(User::class)->required(),
+                    TextInput::make('password')->password()->required(),
+                    TextInput::make('password_confirmation')
+                    ->password()
+                    ->same('password')->required(),
+                    ])
+                ->createOptionUsing(fn (array $data) => User::create($data)->id),
+                Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver')
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('name')->required(),
+                    TextInput::make('email')->unique(User::class)->required(),
+                    TextInput::make('password')->password()->required(),
+                    TextInput::make('password_confirmation')
+                    ->password()
+                    ->same('password')->required(),
+                    ])
+                ->createOptionUsing(fn (array $data) => User::create($data)->id),
             ]),
             Section::make("Address")->schema([
                 TextInput::make('street_address')->required(),
@@ -65,7 +85,14 @@ class ShipmentResource extends Resource
                 TextInput::make('postal_code')->required(),
             ])->collapsible()->columns(2),
                 Section::make('Package Information')->schema([
-                Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
+                Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier')
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('name')->required(),
+                    TextInput::make('contact_email')->unique(Carrier::class)->required(),
+                    FileUpload::make('logo')->required()->disk('public')->directory('images'),
+                    ])
+                ->createOptionUsing(fn (array $data) => Carrier::create($data)->id),
                 TextInput::make("weight")->numeric()->required()->suffix('KG'),
                 TextInput::make("value")->numeric()->required()->suffix('$'),
                 Checkbox::make('isFlex')->label('Flex Shipment'),

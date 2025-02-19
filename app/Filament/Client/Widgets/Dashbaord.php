@@ -44,7 +44,7 @@ class Dashbaord extends BaseWidget
             ->chart([1,20,10,10,20,40])
             ->color('danger')
             ,
-            Stat::make('Total Shipment Cost',$total_shipment_cost.' DH')
+            Stat::make('Total Shipment Cost',number_format($total_shipment_cost,0).' DH')
             ->description('Total cost of approved shipments')
             ->descriptionIcon('heroicon-m-currency-dollar',IconPosition::Before)
             ->chart([1,20,10,10,20,40])

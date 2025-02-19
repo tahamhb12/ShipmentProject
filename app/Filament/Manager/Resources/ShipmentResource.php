@@ -54,8 +54,28 @@ class ShipmentResource extends Resource
                 TextInput::make("shipment_price")
                 ->visible(fn ($record) => $record !== null)
                 ->suffix('$'),
-                Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender'),
-                Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver'),
+                Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender')
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('name')->required(),
+                    TextInput::make('email')->unique(User::class)->required(),
+                    TextInput::make('password')->password()->required(),
+                    TextInput::make('password_confirmation')
+                    ->password()
+                    ->same('password')->required(),
+                    ])
+                ->createOptionUsing(fn (array $data) => User::create($data)->id),
+                Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver')
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('name')->required(),
+                    TextInput::make('email')->unique(User::class)->required(),
+                    TextInput::make('password')->password()->required(),
+                    TextInput::make('password_confirmation')
+                    ->password()
+                    ->same('password')->required(),
+                    ])
+                ->createOptionUsing(fn (array $data) => User::create($data)->id),
             ]),
             Section::make("Address")->schema([
                 TextInput::make('street_address')->required(),
