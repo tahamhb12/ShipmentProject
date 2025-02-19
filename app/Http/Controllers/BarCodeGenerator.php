@@ -11,10 +11,10 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class BarCodeGenerator extends Controller
 {
     public function generateBarCode($id){
-        $barcode = (new \Picqer\Barcode\Types\TypeCode128())->getBarcode($id);
+        $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
+        $barcode = $generator->getBarcode($id, $generator::TYPE_CODE_128, 5, 120);
 
-        $renderer = new \Picqer\Barcode\Renderers\HtmlRenderer();
-        return $renderer->render($barcode);
+        return $barcode;
     }
 
     public function generatePDF($id)

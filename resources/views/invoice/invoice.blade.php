@@ -34,15 +34,14 @@
             </div>
             <div class="order_no">
                 <p>Weight:</p>
-                <p>{{$weight}}KG</p>
+                <p>{{$weight}} KG</p>
             </div>
         </div>
         <hr>
-        {{-- <p>{!! $barcode !!}</p> --}}
         <div class="barcode">
             <p class="test">{!! $barcode !!}</p>
-            <p>Delivery Instruction: Please leave with reception</p>
         </div>
+        <p class="inst">Delivery Instruction: Please leave with reception</p>
     </div>
 </body>
 </html>
