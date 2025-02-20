@@ -49,7 +49,7 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('client.name')->searchable(),
-                TextColumn::make('amount'),
+                TextColumn::make('amount')->formatStateUsing(fn($state)=>$state.' DH'),
                 TextColumn::make('method'),
                 TextColumn::make('date')->date(),
                 TextColumn::make('details')->limit(30),
