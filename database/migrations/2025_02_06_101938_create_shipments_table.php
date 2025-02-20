@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('postal_code');
             $table->string('country');
             $table->enum('status',['pending','approved','rejected'])->default('pending');
+            $table->string('description');
             $table->timestamps();
         });
     }

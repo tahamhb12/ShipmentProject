@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -35,7 +36,8 @@ class PaymentResource extends Resource
                 TextInput::make('amount')->required()->numeric(),
                 Select::make('method')->options(['Cheque','Virment','Cash'])->required(),
                 DatePicker::make('date')->required(),
-                FileUpload::make('attachment')->required()->disk('public')->directory('shipment_files')->multiple(),
+                FileUpload::make('attachment')->multiple(),
+                Textarea::make('details')->required(),
             ]);
     }
 
@@ -46,6 +48,7 @@ class PaymentResource extends Resource
                 TextColumn::make('amount')->formatStateUsing(fn($state)=>$state.' DH'),
                 TextColumn::make('method'),
                 TextColumn::make('date')->date(),
+                TextColumn::make('details')->limit(30),
                 ImageColumn::make('attachment'),
             ])
             ->filters([

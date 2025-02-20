@@ -8,6 +8,8 @@ use App\Filament\Exports\ShipmentExporter;
 use App\Models\Carrier;
 use App\Models\Shipment;
 use App\Models\User;
+use Dompdf\FrameDecorator\Text;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
@@ -32,6 +34,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Infolists\Components\CountryEntry;
 use ZipArchive;
 
 class ShipmentResource extends Resource
@@ -70,8 +73,9 @@ class ShipmentResource extends Resource
                 TextInput::make("weight")->numeric()->required()->suffix('KG'),
                 TextInput::make("value")->numeric()->required()->suffix('$'),
                 Checkbox::make('isFlex')->label('Flex Shipment'),
-                FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
-            ])->collapsible(),
+                FileUpload::make("attachment")->disk('public')->directory('shipment_files')->multiple(),
+                Textarea::make('description')->required()->placeholder('about the shipment...'),
+                ])->collapsible(),
         ]);
     }
 
@@ -143,7 +147,7 @@ class ShipmentResource extends Resource
                         ->label('State'),
                     TextEntry::make('postal_code')
                         ->label('Postal Code'),
-                    TextEntry::make('country')
+                    CountryEntry::make('country')
                         ->label('Country'),
                 ])->collapsible(),
             ]),
@@ -191,6 +195,7 @@ class ShipmentResource extends Resource
                         ->badge()
                         ->color(fn ($state) => $state ? 'success' : 'danger')
                         ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+                    TextEntry::make('description')->copyable()->limit(25)->default('No description'),
                 ])->collapsible()->columns(2),
                 ComponentsSection::make('Files')->schema([
                     ImageEntry::make('attachment')

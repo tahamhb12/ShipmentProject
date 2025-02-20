@@ -13,6 +13,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Group;
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Infolists\Components\CountryEntry;
 
 class ApprovedShipmentResource extends Resource
 {
@@ -71,9 +73,11 @@ class ApprovedShipmentResource extends Resource
                     Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
                     TextInput::make("weight")->numeric()->required()->suffix('KG'),
                     TextInput::make("value")->numeric()->required()->suffix('$'),
-                    FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
+                    FileUpload::make("attachment")->disk('public')->directory('shipment_files')->multiple(),
+                    Textarea::make('description')->placeholder('about the shipment...')->required(),
                     Checkbox::make('isFlex')->label('Flex Shipment'),
-                ])->collapsible(),            ]);
+                ])->collapsible(),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -84,10 +88,10 @@ class ApprovedShipmentResource extends Resource
                 TextColumn::make('user.name'),
                 TextColumn::make('receiver.name'),
                 TextColumn::make('carrier.name'),
-                TextColumn::make('weight')->formatStateUsing(fn($state)=>$state.' Kg'),
+                TextColumn::make('weight')->formatStateUsing(callback: fn($state)=>$state.' Kg'),
                 TextColumn::make('value')->money('mad'),
                 TextColumn::make('shipment_price')->money('mad')->default('Not Assigned Yet'),
-                IconColumn::make('isFlex')->label('Flex Shipment')->boolean(),
+                IconColumn::make('isFlex')->label('Flex')->boolean(),
                 TextColumn::make("status")
                 ->formatStateUsing(function($state){
                     if($state == "approved") return 'Approved';
@@ -149,7 +153,7 @@ class ApprovedShipmentResource extends Resource
                         ->label('State'),
                     TextEntry::make('postal_code')
                         ->label('Postal Code'),
-                    TextEntry::make('country')
+                    CountryEntry::make('country')
                         ->label('Country'),
                 ])->collapsible(),
             ]),
@@ -197,6 +201,7 @@ class ApprovedShipmentResource extends Resource
                     TextEntry::make('reason')
                         ->label('Reason')
                         ->hidden(fn ($record) => empty($record->reason)),
+                    TextEntry::make('description')->copyable()->limit(25)->default('No description'),
                 ])->collapsible()->columns(2),
                 ComponentsSection::make('Files')->schema([
                     ImageEntry::make('attachment')

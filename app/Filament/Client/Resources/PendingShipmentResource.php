@@ -13,6 +13,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Group;
@@ -30,6 +31,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Infolists\Components\CountryEntry;
 
 class PendingShipmentResource extends Resource
 {
@@ -62,9 +64,10 @@ class PendingShipmentResource extends Resource
                     Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
                     TextInput::make("weight")->numeric()->required()->suffix('KG'),
                     TextInput::make("value")->numeric()->required()->suffix('$'),
-                    FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
                     Checkbox::make('isFlex')->label('Flex Shipment'),
-                ])->collapsible(),
+                    FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
+                    Textarea::make('description')->placeholder('about the shipment...')->required(),
+                    ])->collapsible(),
             ]);
     }
 
@@ -132,7 +135,7 @@ class PendingShipmentResource extends Resource
                         ->label('State'),
                     TextEntry::make('postal_code')
                         ->label('Postal Code'),
-                    TextEntry::make('country')
+                    CountryEntry::make('country')
                         ->label('Country'),
                 ])->collapsible(),
             ]),
@@ -168,6 +171,7 @@ class PendingShipmentResource extends Resource
                     TextEntry::make('reason')
                         ->label('Reason')
                         ->hidden(fn ($record) => empty($record->reason)),
+                    TextEntry::make('description')->copyable()->limit(25)->default('No description'),
                 ])->collapsible()->columns(2),
                 ComponentsSection::make('Images')->schema([
                     ImageEntry::make('attachment')

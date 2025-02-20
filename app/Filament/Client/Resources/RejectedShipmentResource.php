@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Infolists\Components\CountryEntry;
 
 class RejectedShipmentResource extends Resource
 {
@@ -47,29 +48,8 @@ class RejectedShipmentResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Section::make()->schema([
-                    TextInput::make("reason")
-                    ->visible(fn ($record): bool => $record !== null),
-                    Select::make(name: 'user_id')->options(User::pluck('name','id'))->required()->searchable()->label('Sender'),
-                    Select::make(name: 'receiver_id')->options(User::pluck('name','id'))->required()->searchable()->label('Receiver'),
-                ]),
-                Section::make("Address")->schema([
-                    TextInput::make('street_address')->required(),
-                    TextInput::make('state')->required(),
-                    TextInput::make('city')->required(),
-                    Country::make('country')->required(),
-                    TextInput::make('postal_code')->required(),
-                ])->collapsible()->columns(2),
-                Section::make('Package Information')->schema([
-                    Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
-                    TextInput::make("weight")->numeric()->required()->suffix('KG'),
-                    TextInput::make("value")->numeric()->required()->suffix('$'),
-                    FileUpload::make("attachment")->disk('public')->directory('shipment_files')->required()->multiple(),
-                    Checkbox::make('isFlex')->label('Flex Shipment'),
-                ])->collapsible(),
-            ]);
+        return $form;
+        //
     }
 
     public static function table(Table $table): Table
@@ -129,7 +109,7 @@ class RejectedShipmentResource extends Resource
                         ->label('State'),
                     TextEntry::make('postal_code')
                         ->label('Postal Code'),
-                    TextEntry::make('country')
+                    CountryEntry::make('country')
                         ->label('Country'),
                 ])->collapsible(),
             ]),
@@ -164,6 +144,7 @@ class RejectedShipmentResource extends Resource
                         ->badge()
                         ->color(fn ($state) => $state ? 'success' : 'danger')
                         ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+                        TextEntry::make('description')->copyable()->limit(25)->default('No description'),
                 ])->collapsible()->columns(2),
                 ComponentsSection::make('Images')->schema([
                     ImageEntry::make('attachment')

@@ -30,7 +30,7 @@ class CarrierResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->required(),
-                TextInput::make('contact_email')->required(),
+                TextInput::make('contact_email'),
                 FileUpload::make('logo')->required()->disk('public')->directory('images'),
             ]);
     }

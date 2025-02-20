@@ -12,7 +12,7 @@ class BarCodeGenerator extends Controller
 {
     public function generateBarCode($id){
         $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
-        $barcode = $generator->getBarcode($id, $generator::TYPE_CODE_128, 5, 120);
+        $barcode = $generator->getBarcode($id, $generator::TYPE_CODE_128, 2, 80);
 
         return $barcode;
     }

@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Models\Scopes\GlobalScope;
 use App\Models\Scopes\UserScope;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Address extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['user_id','street_address','city','state','postal_code','country'];
 
     public function user(){
@@ -18,7 +21,7 @@ class Address extends Model
     {
         static::creating(function ($address) {
             $user = Auth::user();
-            if ($user->role!=='Admin') {
+            if ($user && $user->role!=='Admin') {
                 $address->user_id = Auth::id();
             }
         });

@@ -4,6 +4,8 @@ namespace App\Filament\Manager\Resources;
 
 use App\Filament\Manager\Resources\UserResource\Pages;
 use App\Filament\Manager\Resources\UserResource\RelationManagers;
+use App\Models\Payment;
+use App\Models\Shipment;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -15,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -44,10 +47,31 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->query(User::query()->whereNot('role','Admin'))
+        ->query(User::query()->whereNot('role','Admin')
+        ->whereNot('role','Manager')
+        ->whereNot('role','Accountant'))
             ->columns([
-                TextColumn::make("name"),
-                TextColumn::make("email"),
+                TextColumn::make("name")->searchable(),
+                TextColumn::make("email")->searchable(),
+                TextColumn::make("role")
+                ->label('Total Paid')
+                ->formatStateUsing(function($record){
+                    $total_paid = Payment::where('client_id',$record->id)->sum('amount');
+                    return number_format($total_paid,0) . ' DH';
+                })
+                ->color('success')
+                ->badge(),
+                TextColumn::make("created_at")
+                ->label('Total Unpaid')
+                ->formatStateUsing(function($record){
+                    $total_paid = Payment::where('client_id',$record->id)->sum('amount');
+                    $total_shipment_cost = Shipment::where('status','approved')
+                    ->where('user_id',$record->id)
+                    ->sum('shipment_price');
+                    return number_format($total_shipment_cost-$total_paid,0) . ' DH';
+                })
+                ->color('danger')
+                ->badge(),
             ])
             ->filters([
                 //

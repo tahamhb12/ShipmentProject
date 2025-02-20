@@ -6,11 +6,13 @@ use App\Models\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Payment extends Model
 {
-    protected $fillable = ['client_id','amount','method','date','attachment'];
+    use HasFactory;
+
+    protected $fillable = ['client_id','amount','method','date','attachment','details'];
 
     protected $casts = [
         'attachment' => 'array',
