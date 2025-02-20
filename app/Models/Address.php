@@ -21,7 +21,7 @@ class Address extends Model
     {
         static::creating(function ($address) {
             $user = Auth::user();
-            if ($user && $user->role!=='Admin') {
+            if ($user && $user->role!=='Admin' && $user->role!=='Manager') {
                 $address->user_id = Auth::id();
             }
         });
