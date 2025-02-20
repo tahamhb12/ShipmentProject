@@ -27,6 +27,7 @@ class Invoice extends Page
             ->label('Print Invoice')
             ->icon('heroicon-o-printer')
             ->color('primary')
+            ->url(route('download.invoice',['id'=>$this->record] ))
     ];
     }
 

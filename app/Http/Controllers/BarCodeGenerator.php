@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 class BarCodeGenerator extends Controller
 {
     public function generateBarCode($id){
-        $barcode = (new \Picqer\Barcode\Types\TypeCode128())->getBarcode($id);
+        $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
+        $barcode = $generator->getBarcode($id, $generator::TYPE_CODE_128, 2, 70, );
 
-        $renderer = new \Picqer\Barcode\Renderers\HtmlRenderer();
-        return $renderer->render($barcode);
+        return $barcode;
     }
 }
