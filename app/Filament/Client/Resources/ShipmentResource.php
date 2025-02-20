@@ -72,9 +72,9 @@ class ShipmentResource extends Resource
                 Select::make(name: 'carrier_id')->options(Carrier::pluck('name','id'))->required()->searchable()->label('Carrier'),
                 TextInput::make("weight")->numeric()->required()->suffix('KG'),
                 TextInput::make("value")->numeric()->required()->suffix('$'),
-                Checkbox::make('isFlex')->label('Flex Shipment'),
                 FileUpload::make("attachment")->disk('public')->directory('shipment_files')->multiple(),
                 Textarea::make('description')->required()->placeholder('about the shipment...'),
+                Checkbox::make('isFlex')->label('Flex Shipment'),
                 ])->collapsible(),
         ]);
     }

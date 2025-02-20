@@ -69,8 +69,8 @@ class RejectedShipmentResource extends Resource
                     TextInput::make("weight")->numeric()->required()->suffix('KG'),
                     TextInput::make("value")->numeric()->required()->suffix('$'),
                     FileUpload::make("attachment")->disk('public')->directory('shipment_files')->multiple(),
-                    Checkbox::make('isFlex')->label('Flex Shipment'),
                     Textarea::make('description')->placeholder('about the shipment...')->required(),
+                    Checkbox::make('isFlex')->label('Flex Shipment'),
 
                 ])->collapsible(),
             ]);
