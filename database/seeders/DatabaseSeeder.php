@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
         $carrier = Carrier::factory()->create();
 
         Shipment::factory(5)->create([
-            'user_id' => $admin->id,
+            'user_id' => $client->id,
             'receiver_id' => $client->id,
             'carrier_id' => $carrier->id,
         ]);
